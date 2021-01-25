@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import CoreImage
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var sourceImage: UIImageView!
     @IBOutlet weak var rotateButton: UIButton!
     @IBOutlet weak var invertColorsButton: UIButton!
@@ -20,7 +21,7 @@ class ViewController: UIViewController {
     
     @IBAction func doInvertColors(_ sender: Any) {
         if let image = sourceImage.image {
-            sourceImage.image = invertColors(image: image)
+            sourceImage.image = image.grayscaleImage()
         }
     }
     
@@ -32,19 +33,22 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
     }
-
     
-    func invertColors(image: UIImage) -> UIImage {
-        if let sourceImage = CIImage(image: image) {
-            if let inversionFilter = CIFilter(name: "CIColorInvert") {
-                inversionFilter.setValue(sourceImage, forKey: kCIInputImageKey)
-                return UIImage(ciImage: inversionFilter.outputImage!)
+}
+
+extension UIImage {
+    func grayscaleImage() -> UIImage {
+        if let ciImage = CoreImage.CIImage(image: self, options: nil) {
+            let paramsColor: [String : AnyObject] = [ kCIInputSaturationKey: NSNumber(value: 0.0) ]
+
+            let grayscale = ciImage.applyingFilter("CIColorControls", parameters: paramsColor)
+            
+            if let processedCGImage = CIContext().createCGImage(grayscale, from: grayscale.extent) {
+                return UIImage(cgImage: processedCGImage, scale: self.scale, orientation: self.imageOrientation)
             }
         }
         return UIImage()
     }
-
 }
-
