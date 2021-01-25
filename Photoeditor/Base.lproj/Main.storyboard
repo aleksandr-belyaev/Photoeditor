@@ -1,24 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Photoeditor" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="p7r-wr-bh5">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="NQY-wk-QLz">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="409"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nice" translatesAutoresizingMaskIntoConstraints="NO" id="3AD-DV-3mv">
+                                                <rect key="frame" x="0.0" y="0.0" width="207" height="409"/>
+                                            </imageView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="55p-3c-I4B">
+                                                <rect key="frame" x="207" y="0.0" width="207" height="409"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fIH-xe-DCj">
+                                                        <rect key="frame" x="0.0" y="0.0" width="207" height="136.5"/>
+                                                        <state key="normal" title="Rotate"/>
+                                                        <connections>
+                                                            <action selector="doRotate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="PFf-3U-pT4"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u13-ij-Dq4">
+                                                        <rect key="frame" x="0.0" y="136.5" width="207" height="136"/>
+                                                        <state key="normal" title="Invert colors"/>
+                                                        <connections>
+                                                            <action selector="doInvertColors:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZAf-U1-rWV"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kjp-RP-6Ed">
+                                                        <rect key="frame" x="0.0" y="272.5" width="207" height="136.5"/>
+                                                        <state key="normal" title="Mirror image"/>
+                                                        <connections>
+                                                            <action selector="doMirrorImage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rzS-f5-F76"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="KUl-R4-Ui6">
+                                        <rect key="frame" x="0.0" y="409" width="414" height="409"/>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="p7r-wr-bh5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="3Bd-Zs-VUw"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="p7r-wr-bh5" secondAttribute="bottom" id="4Uz-Lg-utg"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="p7r-wr-bh5" secondAttribute="trailing" id="8YQ-dP-V6E"/>
+                            <constraint firstItem="p7r-wr-bh5" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="rHC-wr-VKS"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="invertColorsButton" destination="u13-ij-Dq4" id="p4S-jf-z1e"/>
+                        <outlet property="mirrorImageButton" destination="Kjp-RP-6Ed" id="koJ-VX-ikF"/>
+                        <outlet property="rotateButton" destination="fIH-xe-DCj" id="ys1-ZK-PlR"/>
+                        <outlet property="sourceImage" destination="3AD-DV-3mv" id="BrE-f9-xy5"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="139" y="126"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="nice" width="500" height="500"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>
