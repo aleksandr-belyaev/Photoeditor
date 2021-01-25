@@ -15,13 +15,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var mirrorImageButton: UIButton!
     
     @IBAction func doRotate(_ sender: Any) {
-        sourceImage.transform = sourceImage.transform.rotated(by: .pi)
+        sourceImage.transform = sourceImage.transform.rotated(by: .pi/4)
     }
     
     @IBAction func doInvertColors(_ sender: Any) {
+        if let image = sourceImage.image {
+            sourceImage.image = invertColors(image: image)
+        }
     }
     
     @IBAction func doMirrorImage(_ sender: Any) {
+        if let image = sourceImage.image {
+            sourceImage.image = image.withHorizontallyFlippedOrientation()
+        }
     }
     
     override func viewDidLoad() {
@@ -29,6 +35,16 @@ class ViewController: UIViewController {
 
     }
 
+    
+    func invertColors(image: UIImage) -> UIImage {
+        if let sourceImage = CIImage(image: image) {
+            if let inversionFilter = CIFilter(name: "CIColorInvert") {
+                inversionFilter.setValue(sourceImage, forKey: kCIInputImageKey)
+                return UIImage(ciImage: inversionFilter.outputImage!)
+            }
+        }
+        return UIImage()
+    }
 
 }
 
