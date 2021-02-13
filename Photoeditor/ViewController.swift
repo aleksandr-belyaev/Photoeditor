@@ -12,11 +12,15 @@ class ViewController: UIViewController {
     
     weak var editorStackView: UIStackView!
     weak var sourceImageView: UIImageView!
-    weak var editButtonOne: UIButton!
+    weak var buttonStack: UIStackView!
+    weak var rotateButton: UIButton!
+    weak var bwButton: UIButton!
+    weak var mirrorButton: UIButton!
     
     override func loadView() {
         super.loadView()
         
+        //Главный стэк, в котором располагается исходное изображение и стэк с кнопками для его редактирования
         let editorStackView = UIStackView(frame: .zero)
         editorStackView.translatesAutoresizingMaskIntoConstraints = false
         editorStackView.backgroundColor = .gray
@@ -25,25 +29,57 @@ class ViewController: UIViewController {
         editorStackView.distribution = .fill
         editorStackView.spacing = 10
         
+        //Стэк для кнопок
+        let buttonStackView = UIStackView(frame: .zero)
+        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
+        buttonStackView.axis = .horizontal
+        buttonStackView.alignment = .fill
+        buttonStackView.distribution = .fillProportionally
+        buttonStackView.spacing = 5
+        
+        //Вьюха с исходной картинкой
         let sourceImageView = UIImageView(frame: .zero)
-        sourceImageView.translatesAutoresizingMaskIntoConstraints = false
+        sourceImageView.translatesAutoresizingMaskIntoConstraints = true
         
-        let editButtonOne = UIButton(type: .roundedRect)
-        editButtonOne.frame = .zero
-        editButtonOne.translatesAutoresizingMaskIntoConstraints = false
-        editButtonOne.backgroundColor = .green
-        editButtonOne.setTitle("Button one", for: .normal)
-        editButtonOne.addTarget(self, action: #selector(doRotate), for: .touchUpInside)
+        //Кнопка поворота избражения
+        let rotateButton = UIButton().createEditButton("Повернуть")
+        rotateButton.addTarget(self, action: #selector(doRotateImage), for: .touchUpInside)
+        //Кнопка чб режима
+        let bwButton = UIButton().createEditButton("Чб")
+        bwButton.addTarget(self, action: #selector(doGrayscaleImageColors), for: .touchUpInside)
+        //Кнопка отзеркаливания
+        let mirrorButton = UIButton().createEditButton("Отзеркалить")
+        mirrorButton.addTarget(self, action: #selector(doMirrorImage), for: .touchUpInside)
         
+        //Компонуем кнопки всё в стэки и устанавливаем констрэйнты
         editorStackView.addArrangedSubview(sourceImageView)
-        editorStackView.addArrangedSubview(editButtonOne)
+        editorStackView.addArrangedSubview(buttonStackView)
+        buttonStackView.addArrangedSubview(rotateButton)
+        buttonStackView.addArrangedSubview(bwButton)
+        buttonStackView.addArrangedSubview(mirrorButton)
         self.view.addSubview(editorStackView)
-        NSLayoutConstraint.activate(setEditorStackViewConstraints(editorStackView))
-        NSLayoutConstraint.activate(setSourceImageConstraints(sourceImageView))
         
-        self.editButtonOne = editButtonOne
+        NSLayoutConstraint.activate([
+            editorStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            editorStackView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            editorStackView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10)
+        ])
+        
+        NSLayoutConstraint.activate([
+            sourceImageView.topAnchor.constraint(equalTo: editorStackView.topAnchor, constant: 5),
+            sourceImageView.trailingAnchor.constraint(equalTo: editorStackView.trailingAnchor, constant: -5),
+            sourceImageView.leadingAnchor.constraint(equalTo: editorStackView.leadingAnchor, constant: 5),
+//            sourceImageView.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: -5)
+            sourceImageView.widthAnchor.constraint(equalTo: sourceImageView.heightAnchor)
+        
+        ])
+        
         self.editorStackView = editorStackView
         self.sourceImageView = sourceImageView
+        self.buttonStack = buttonStackView
+        self.rotateButton = rotateButton
+        self.bwButton = bwButton
+        self.mirrorButton = mirrorButton
     }
     
     override func viewDidLoad() {
@@ -52,25 +88,20 @@ class ViewController: UIViewController {
         self.sourceImageView.image = UIImage(named: "nice")
     }
     
-    private func setEditorStackViewConstraints(_ view: UIStackView) -> [NSLayoutConstraint] {
-        let constraints: [NSLayoutConstraint] = [
-            view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            view.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            view.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10)
-        ]
-        return constraints
+    @objc func doRotateImage(_ sender: UIButton) {
+        self.sourceImageView.transform = sourceImageView.transform.rotated(by: .pi/2)
     }
     
-    private func setSourceImageConstraints(_ view: UIImageView) -> [NSLayoutConstraint] {
-        let constraints: [NSLayoutConstraint] = [
-            view.widthAnchor.constraint(equalToConstant: 150),
-            view.widthAnchor.constraint(equalTo: view.heightAnchor),
-        ]
-        return constraints
+    @objc func doGrayscaleImageColors(_ sender: Any) {
+        if let image = sourceImageView.image {
+            self.sourceImageView.image = image.grayscaleImage()
+        }
     }
     
-    @objc func doRotate(_ sender: UIButton) {
-        sourceImageView.transform = sourceImageView.transform.rotated(by: .pi/2)
+    @objc func doMirrorImage(_ sender: Any) {
+        if let image = self.sourceImageView.image {
+            self.sourceImageView.image = image.withHorizontallyFlippedOrientation()
+        }
     }
     
 }
@@ -90,23 +121,13 @@ extension UIImage {
     }
 }
 
-
-
-
-//    @IBOutlet weak var sourceImage: UIImageView!
-//    @IBOutlet weak var rotateButton: UIButton!
-//    @IBOutlet weak var invertColorsButton: UIButton!
-//    @IBOutlet weak var mirrorImageButton: UIButton!
-//
-//
-//    @IBAction func doInvertColors(_ sender: Any) {
-//        if let image = sourceImage.image {
-//            sourceImage.image = image.grayscaleImage()
-//        }
-//    }
-//
-//    @IBAction func doMirrorImage(_ sender: Any) {
-//        if let image = sourceImage.image {
-//            sourceImage.image = image.withHorizontallyFlippedOrientation()
-//        }
-//    }
+extension UIButton {
+    func createEditButton(_ title: String) -> UIButton {
+        let someButton = UIButton(type: .roundedRect)
+        someButton.frame = .zero
+        someButton.translatesAutoresizingMaskIntoConstraints = false
+        someButton.backgroundColor = .green
+        someButton.setTitle(title, for: .normal)
+        return someButton
+    }
+}
