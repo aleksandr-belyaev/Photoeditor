@@ -18,7 +18,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     weak var mirrorButton: UIButton!
     weak var savedImagesView: UICollectionView!
     
-    let cellId = "Cell"
+    let cellReuseIdentifier = "Cell"
 
     let arrayImages = ["nice", "nice", "nice", "nice", "nice"]
     
@@ -39,7 +39,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
         buttonStackView.axis = .horizontal
         buttonStackView.alignment = .fill
-        buttonStackView.distribution = .fillProportionally
+        buttonStackView.distribution = .fillEqually
         buttonStackView.spacing = 5
         
         //Вьюха с исходной картинкой
@@ -57,14 +57,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         mirrorButton.addTarget(self, action: #selector(doMirrorImage), for: .touchUpInside)
         
         //Вьюха с сохранёнными картинками
-        let cellLayout = UICollectionViewFlowLayout()
-        cellLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        cellLayout.itemSize = CGSize(width: 50, height: 50)
-
-        let savedImagesView = UICollectionView(frame: .zero, collectionViewLayout: cellLayout)
+        let savedImagesView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         savedImagesView.translatesAutoresizingMaskIntoConstraints = false
         savedImagesView.backgroundColor = .red
-        savedImagesView.register(CollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        savedImagesView.register(CollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         
         
         //Компонуем кнопки всё в стэки и устанавливаем констрэйнты
@@ -88,7 +84,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         ])
         
         NSLayoutConstraint.activate([
-            savedImagesView.topAnchor.constraint(equalTo: buttonStackView.bottomAnchor),
             savedImagesView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
@@ -115,13 +110,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         self.sourceImageView.transform = sourceImageView.transform.rotated(by: .pi/2)
     }
     
-    @objc func doGrayscaleImageColors(_ sender: Any) {
+    @objc func doGrayscaleImageColors(_ sender: UIButton) {
         if let image = sourceImageView.image {
             self.sourceImageView.image = image.grayscaleImage()
         }
     }
     
-    @objc func doMirrorImage(_ sender: Any) {
+    @objc func doMirrorImage(_ sender: UIButton) {
         if let image = self.sourceImageView.image {
             self.sourceImageView.image = image.withHorizontallyFlippedOrientation()
         }
@@ -132,28 +127,17 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? CollectionViewCell {
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as? CollectionViewCell {
 //            let imageName = arrayImages[indexPath.row]
 //
 //            cell.setImage(imageName: imageName)
+            cell.backgroundColor = .purple
             return cell
         }
         return UICollectionViewCell()
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 extension UIImage {
     func grayscaleImage() -> UIImage {
