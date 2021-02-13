@@ -66,12 +66,7 @@ class ViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            sourceImageView.topAnchor.constraint(equalTo: editorStackView.topAnchor, constant: 5),
-            sourceImageView.trailingAnchor.constraint(equalTo: editorStackView.trailingAnchor, constant: -5),
-            sourceImageView.leadingAnchor.constraint(equalTo: editorStackView.leadingAnchor, constant: 5),
-//            sourceImageView.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: -5)
             sourceImageView.widthAnchor.constraint(equalTo: sourceImageView.heightAnchor)
-        
         ])
         
         self.editorStackView = editorStackView
