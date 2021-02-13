@@ -19,47 +19,31 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     weak var savedImagesView: UICollectionView!
     
     let cellReuseIdentifier = "Cell"
-
-    let arrayImages = ["nice", "nice", "nice", "nice", "nice"]
+    
+    var alert = UIAlertController()
+    
     
     override func loadView() {
         super.loadView()
         
         //Верхний стэк, в котором располагается исходное изображение и стэк с кнопками для его редактирования
-        let editorStackView = UIStackView(frame: .zero)
-        editorStackView.translatesAutoresizingMaskIntoConstraints = false
-        editorStackView.backgroundColor = .gray
-        editorStackView.axis = .vertical
-        editorStackView.alignment = .fill
-        editorStackView.distribution = .fill
-        editorStackView.spacing = 10
+        let editorStackView = createCustomStackView(axis: .vertical, distribution: .fill)
         
         //Стэк для кнопок
-        let buttonStackView = UIStackView(frame: .zero)
-        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-        buttonStackView.axis = .horizontal
-        buttonStackView.alignment = .fill
-        buttonStackView.distribution = .fillEqually
-        buttonStackView.spacing = 5
+        let buttonStackView = createCustomStackView(axis: .horizontal, distribution: .fillEqually)
         
         //Вьюха с исходной картинкой
         let sourceImageView = UIImageView(frame: .zero)
         sourceImageView.translatesAutoresizingMaskIntoConstraints = true
         
-        //Кнопка поворота избражения
-        let rotateButton = UIButton().createEditButton("Повернуть")
-        rotateButton.addTarget(self, action: #selector(doRotateImage), for: .touchUpInside)
-        //Кнопка чб режима
-        let bwButton = UIButton().createEditButton("Чб")
-        bwButton.addTarget(self, action: #selector(doGrayscaleImageColors), for: .touchUpInside)
-        //Кнопка отзеркаливания
-        let mirrorButton = UIButton().createEditButton("Отзеркалить")
-        mirrorButton.addTarget(self, action: #selector(doMirrorImage), for: .touchUpInside)
+        //Кнопки редактирования
+        let rotateButton = createEditButton(withTitle: "Повернуть", andAction: #selector(doRotateImage))
+        let bwButton = createEditButton(withTitle: "Чб", andAction: #selector(doGrayscaleImageColors))
+        let mirrorButton = createEditButton(withTitle: "Отзеркалить", andAction: #selector(doMirrorImage))
         
         //Вьюха с сохранёнными картинками
         let savedImagesView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         savedImagesView.translatesAutoresizingMaskIntoConstraints = false
-        savedImagesView.backgroundColor = .red
         savedImagesView.register(CollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         
         
@@ -123,7 +107,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return arrayImages.count
+        return 35
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -135,6 +119,26 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             return cell
         }
         return UICollectionViewCell()
+    }
+    
+    func createEditButton(withTitle title: String, andAction action: Selector) -> UIButton {
+        let customButton = UIButton(type: .roundedRect)
+        customButton.frame = .zero
+        customButton.translatesAutoresizingMaskIntoConstraints = false
+        customButton.backgroundColor = .green
+        customButton.setTitle(title, for: .normal)
+        customButton.addTarget(self, action: action, for: .touchUpInside)
+        return customButton
+    }
+    
+    func createCustomStackView(axis: NSLayoutConstraint.Axis, distribution: UIStackView.Distribution) -> UIStackView {
+        let customStackView = UIStackView(frame: .zero)
+        customStackView.translatesAutoresizingMaskIntoConstraints = false
+        customStackView.axis = axis
+        customStackView.alignment = .fill
+        customStackView.distribution = distribution
+        customStackView.spacing = 5
+        return customStackView
     }
     
 }
@@ -151,16 +155,5 @@ extension UIImage {
             }
         }
         return UIImage()
-    }
-}
-
-extension UIButton {
-    func createEditButton(_ title: String) -> UIButton {
-        let someButton = UIButton(type: .roundedRect)
-        someButton.frame = .zero
-        someButton.translatesAutoresizingMaskIntoConstraints = false
-        someButton.backgroundColor = .green
-        someButton.setTitle(title, for: .normal)
-        return someButton
     }
 }
