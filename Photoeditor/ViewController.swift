@@ -8,7 +8,7 @@
 import UIKit
 import CoreImage
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     weak var editorStackView: UIStackView!
     weak var sourceImageView: UIImageView!
@@ -16,11 +16,16 @@ class ViewController: UIViewController {
     weak var rotateButton: UIButton!
     weak var bwButton: UIButton!
     weak var mirrorButton: UIButton!
+    weak var savedImagesView: UICollectionView!
+    
+    let cellId = "Cell"
+
+    let arrayImages = ["nice", "nice", "nice", "nice", "nice"]
     
     override func loadView() {
         super.loadView()
         
-        //Главный стэк, в котором располагается исходное изображение и стэк с кнопками для его редактирования
+        //Верхний стэк, в котором располагается исходное изображение и стэк с кнопками для его редактирования
         let editorStackView = UIStackView(frame: .zero)
         editorStackView.translatesAutoresizingMaskIntoConstraints = false
         editorStackView.backgroundColor = .gray
@@ -51,12 +56,25 @@ class ViewController: UIViewController {
         let mirrorButton = UIButton().createEditButton("Отзеркалить")
         mirrorButton.addTarget(self, action: #selector(doMirrorImage), for: .touchUpInside)
         
+        //Вьюха с сохранёнными картинками
+        let cellLayout = UICollectionViewFlowLayout()
+        cellLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        cellLayout.itemSize = CGSize(width: 50, height: 50)
+
+        let savedImagesView = UICollectionView(frame: .zero, collectionViewLayout: cellLayout)
+        savedImagesView.translatesAutoresizingMaskIntoConstraints = false
+        savedImagesView.backgroundColor = .red
+        savedImagesView.register(CollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        
+        
         //Компонуем кнопки всё в стэки и устанавливаем констрэйнты
         editorStackView.addArrangedSubview(sourceImageView)
         editorStackView.addArrangedSubview(buttonStackView)
+        editorStackView.addArrangedSubview(savedImagesView)
         buttonStackView.addArrangedSubview(rotateButton)
         buttonStackView.addArrangedSubview(bwButton)
         buttonStackView.addArrangedSubview(mirrorButton)
+        
         self.view.addSubview(editorStackView)
         
         NSLayoutConstraint.activate([
@@ -69,18 +87,28 @@ class ViewController: UIViewController {
             sourceImageView.widthAnchor.constraint(equalTo: sourceImageView.heightAnchor)
         ])
         
+        NSLayoutConstraint.activate([
+            savedImagesView.topAnchor.constraint(equalTo: buttonStackView.bottomAnchor),
+            savedImagesView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+        
         self.editorStackView = editorStackView
         self.sourceImageView = sourceImageView
         self.buttonStack = buttonStackView
         self.rotateButton = rotateButton
         self.bwButton = bwButton
         self.mirrorButton = mirrorButton
+        self.savedImagesView = savedImagesView
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.sourceImageView.image = UIImage(named: "nice")
+        
+        savedImagesView.delegate = self
+        savedImagesView.dataSource = self
     }
     
     @objc func doRotateImage(_ sender: UIButton) {
@@ -99,7 +127,33 @@ class ViewController: UIViewController {
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return arrayImages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? CollectionViewCell {
+//            let imageName = arrayImages[indexPath.row]
+//
+//            cell.setImage(imageName: imageName)
+            return cell
+        }
+        return UICollectionViewCell()
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 extension UIImage {
     func grayscaleImage() -> UIImage {
