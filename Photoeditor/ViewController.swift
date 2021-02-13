@@ -10,7 +10,7 @@ import CoreImage
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    weak var editorStackView: UIStackView!
+    weak var mainStackView: UIStackView!
     weak var sourceImageView: UIImageView!
     weak var buttonStack: UIStackView!
     weak var rotateButton: UIButton!
@@ -26,10 +26,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     override func loadView() {
         super.loadView()
         
-        //Верхний стэк, в котором располагается исходное изображение и стэк с кнопками для его редактирования
-        let editorStackView = createCustomStackView(axis: .vertical, distribution: .fill)
-        
-        //Стэк для кнопок
+        //Главный стэк, в котором располагается исходное изображение, стэк с кнопками для его редактирования и коллекция для результатов
+        let mainStackView = createCustomStackView(axis: .vertical, distribution: .fill)
         let buttonStackView = createCustomStackView(axis: .horizontal, distribution: .fillEqually)
         
         //Вьюха с исходной картинкой
@@ -44,23 +42,24 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         //Вьюха с сохранёнными картинками
         let savedImagesView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         savedImagesView.translatesAutoresizingMaskIntoConstraints = false
+        savedImagesView.backgroundColor = .none
         savedImagesView.register(CollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         
         
         //Компонуем кнопки всё в стэки и устанавливаем констрэйнты
-        editorStackView.addArrangedSubview(sourceImageView)
-        editorStackView.addArrangedSubview(buttonStackView)
-        editorStackView.addArrangedSubview(savedImagesView)
+        mainStackView.addArrangedSubview(sourceImageView)
+        mainStackView.addArrangedSubview(buttonStackView)
+        mainStackView.addArrangedSubview(savedImagesView)
         buttonStackView.addArrangedSubview(rotateButton)
         buttonStackView.addArrangedSubview(bwButton)
         buttonStackView.addArrangedSubview(mirrorButton)
         
-        self.view.addSubview(editorStackView)
+        self.view.addSubview(mainStackView)
         
         NSLayoutConstraint.activate([
-            editorStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            editorStackView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            editorStackView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10)
+            mainStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            mainStackView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            mainStackView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10)
         ])
         
         NSLayoutConstraint.activate([
@@ -71,7 +70,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             savedImagesView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
-        self.editorStackView = editorStackView
+        self.mainStackView = mainStackView
         self.sourceImageView = sourceImageView
         self.buttonStack = buttonStackView
         self.rotateButton = rotateButton
@@ -107,7 +106,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 35
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
